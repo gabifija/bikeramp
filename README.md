@@ -13,12 +13,32 @@ This endpoint logs the trip and automatically calculates the distance between st
 POST http://example.com/api/trips
 ```
 
+```
+GET curl "http://example.com/api/api/trips"
+
+{
+  "start_address": "Plac Europejski 2, Warszawa, Polska",
+  "destination_address":    "Plac Europejski 2, Warszawa, Polska",
+  "price": "49.75PLN",
+  "date": "July, 4th"
+}
+```
+
 ### Stats
 
 This endpoint retrieves how many kilometers did courier rode during current week and how much money he received on the rides.
 
 ```
 GET http://example.com/api/stats/weekly
+```
+
+```
+curl "http://example.com/api/stats/weekly"
+
+{
+  "total_distance": "40km",
+  "total_price":    "49.75PLN"
+}
 ```
 
 ### Monthly Stats
@@ -29,6 +49,24 @@ This endpoint retrieves summary of ride distances from current month, grouped by
 GET http://example.com/api/stats/monthly
 ```
 
+```
+curl "http://example.com/api/stats/monthly"
+
+[
+  {
+    "day":            "July, 4th",
+    "total_distance": "12km",
+    "avg_ride":       "4km",
+    "avg_price":      "22.75PLN"
+  },
+  {
+    "day":            "July, 5th",
+    "total_distance": "3km",
+    "avg_ride":       "3km",
+    "avg_price":      "15.5PLN"
+  }
+]
+```
 
 ### Run
 
