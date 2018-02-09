@@ -1,41 +1,36 @@
 class API::TripsController < ApplicationController
+  include ExceptionHandler
+  include Response
+
   before_action :set_trip, only: [:show, :update, :destroy]
 
   # GET /trips
   def index
     @trips = Trip.all
-
-    render json: @trips
+    json_response(@trips)
   end
 
   # GET /api/trips/1
   def show
-    render json: @trip
+    json_response(@trip)
   end
 
   # POST /api/trips
   def create
-    @trip = Trip.new(trip_params)
-
-    if @trip.save
-      render json: @trip, status: :created, location: api_trip_path(@trip.id)
-    else
-      render json: @trip.errors, status: :unprocessable_entity
-    end
+    @trip = Trip.create!(trip_params)
+    json_response(@trip, :created)
   end
 
   # PATCH/PUT /api/trips/1
   def update
-    if @trip.update(trip_params)
-      render json: @trip
-    else
-      render json: @trip.errors, status: :unprocessable_entity
-    end
+    @trip.update(trip_params)
+    head :no_content
   end
 
   # DELETE /api/trips/1
   def destroy
     @trip.destroy
+    head :no_content
   end
 
   private
