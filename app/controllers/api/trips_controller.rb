@@ -4,7 +4,7 @@ class API::TripsController < ApplicationController
 
   before_action :set_trip, only: [:show, :update, :destroy]
 
-  # GET /trips
+  # GET /api/trips
   def index
     @trips = Trip.all
     json_response(@trips)
