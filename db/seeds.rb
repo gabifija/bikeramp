@@ -7,8 +7,15 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 Trip.create!(
-  start_address: 'Krakow',
-  destination_address: 'Warszawa',
+  start_address: 'Plac Europejski 2, Warszawa, Polska',
+  destination_address: 'Plac Europejski 2, Warszawa, Polska',
   price: '65',
   date: '2001-02-03T04:05:06+00:00'
+)
+
+Trip.create!(
+  start_address: 'Plac Europejski 2, Warszawa, Polska',
+  destination_address: 'Rynek Główny 39, Kraków, Polska',
+  price: '85',
+  date: '2017-02-03T04:05:06+00:00'
 )
