@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Bikeramp API', type: :request do
   # initialize test data
   let!(:trips) { create_list(:trip, 10) }
-  let(:trip_id) { trip.first.id }
+  let(:trip_id) { trips.first.id }
 
   # Test suite for GET /api/trips
   describe 'GET /api/trips' do
@@ -21,6 +21,7 @@ RSpec.describe 'Bikeramp API', type: :request do
     end
   end
 
+  # Test suite for POST /api/trips
   describe 'POST /api/trips' do
     let(:start_address) { 'Krakow' }
     let(:destination_address) { 'Warszawa' }
@@ -51,6 +52,32 @@ RSpec.describe 'Bikeramp API', type: :request do
         expect(response.body)
           .to match(/Validation failed: Start address can't be blank, Price can't be blank, Date can't be blank/)
       end
+    end
+  end
+
+  # Test suite for PUT /api/trips/:id
+  describe 'PUT /api/trips/:id' do
+    let(:valid_attributes) { { start_address: 'Krakow' } }
+
+    context 'when the record exists' do
+      before { put "/api/trips/#{trip_id}", params: valid_attributes }
+
+      it 'updates the record' do
+        expect(response.body).to be_empty
+      end
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+    end
+  end
+
+  # Test suite for DELETE /api/trips/:id
+  describe 'DELETE /api/trips/:id' do
+    before { delete "/api/trips/#{trip_id}" }
+
+    it 'returns status code 204' do
+      expect(response).to have_http_status(204)
     end
   end
 end
