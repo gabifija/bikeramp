@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :stats
   namespace :api, defaults: {format: :json} do
     resources :trips do
         get 'stats/weekly', on: :collection, controller: "stats", action: "get_weekly_stats"
