@@ -17,7 +17,15 @@ class API::TripsController < ApplicationController
 
   # POST /api/trips
   def create
+    return json_response({
+      message: 'Wrong start or destination address'}, :bad_request) unless is_valid_address?
+
+    return json_response({
+      message: 'Wrong date format. For example: 01/12/2016'}, :bad_request) unless is_valid_date?
+
     @trip = Trip.create!(trip_params)
+    @trip.update_attribute(:distance, count_distance_between_addresses)
+
     json_response(@trip, :created)
   end
 
@@ -34,13 +42,30 @@ class API::TripsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+    def is_valid_date?
+      return true if Date.parse(params[:date])
+      rescue ArgumentError
+        return false
+    end
+
+    def is_valid_address?
+      @start_address = Geocoder.coordinates(params[:start_address])
+      @destination_address = Geocoder.coordinates(params[:destination_address])
+
+      return false if @start_address.nil? || @destination_address.nil?
+      return true
+    end
+
     def set_trip
       @trip = Trip.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
     def trip_params
       params.permit(:start_address, :destination_address, :price, :date)
+    end
+
+    def count_distance_between_addresses
+      Geocoder::Calculations.distance_between(@start_address, @destination_address)
     end
 end

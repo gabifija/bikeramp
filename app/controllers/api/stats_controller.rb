@@ -1,18 +1,29 @@
 class API::StatsController < ApplicationController
-  def get_weekly_stats
-    render json: {}
+  include ExceptionHandler
+  include Response
+
+  def show_weekly
+    range = (Date.today-1.week..Date.today)
+
+    data = {
+        total_distance: calculate_distance(range),
+        total_price: calculate_price(range)
+      }
+
+    json_response(data)
   end
 
-  def get_monthly_stats
+  def show_monthly
+    range = (Date.today-1.month..Date.today)
     render json: {}
   end
 
   private
-    def set_stat
-      @stat = Stat.find(params[:id])
+    def calculate_distance(range)
+      Trip.all.select{ |trip| range.cover?(trip.date) }.pluck(:distance).sum
     end
 
-    def stat_params
-      params.permit(:distance)
+    def calculate_price(range)
+      Trip.all.select{ |trip| range.cover?(trip.date) }.pluck(:price).sum
     end
 end
