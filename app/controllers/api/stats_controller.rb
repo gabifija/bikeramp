@@ -6,15 +6,15 @@ class API::StatsController < ApplicationController
     range = (Date.today-1.week..Date.today)
 
     data = {
-        total_distance: calculate_distance(range),
-        total_price: calculate_price(range)
+        total_distance: Trip.total_distance(range),
+        total_price: Trip.total_price(range)
       }
 
     json_response(data)
   end
 
   def show_monthly
-    range = (Date.today-1.month..Date.today)
+    range = (Date.today.beginning_of_month..Date.today.end_of_month)
 
     @dates = select_occured_dates(range)
 
@@ -32,14 +32,6 @@ class API::StatsController < ApplicationController
   end
 
   private
-
-    def calculate_distance(range)
-      Trip.all.select{ |trip| range.cover?(trip.date) }.pluck(:distance).sum
-    end
-
-    def calculate_price(range)
-      Trip.all.select{ |trip| range.cover?(trip.date) }.pluck(:price).sum
-    end
 
     def select_grouped_trips(range)
       Trip.all.select{ |trip| range.cover?(trip.date) }.group_by { |d| d.date }
