@@ -24,8 +24,8 @@ class API::StatsController < ApplicationController
       data << {
         day: convert_date(date),
         total_distance: count_total_distance(date),
-        avg_ride: "0",
-        avg_price: "0"
+        avg_ride: count_average_ride(date),
+        avg_price: count_average_price(date)
       }
     end
     json_response(data)
@@ -45,12 +45,19 @@ class API::StatsController < ApplicationController
       Trip.all.select{ |trip| range.cover?(trip.date) }.group_by { |d| d.date }
     end
 
-    def select_grouped_trips_by_date(date)
-      Trip.all.group_by { |d| d.date }
+    def count_total_distance(date)
+      distance = Trip.where(date: date).sum(:distance)
+      ActionController::Base.helpers.number_to_human(distance, units: {unit: "km"})
     end
 
-    def count_total_distance(date)
-      select_grouped_trips_by_date(date).values.flatten.map(&:distance).sum
+    def count_average_ride(date)
+      ride = Trip.where(date: date).average(:distance)
+      ActionController::Base.helpers.number_to_human(ride, units: {unit: "km"})
+    end
+
+    def count_average_price(date)
+      price = Trip.where(date: date).average(:price)
+      ActionController::Base.helpers.number_to_human(price, units: {unit: "PLN"})
     end
 
     def select_occured_dates(range)
