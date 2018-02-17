@@ -4,30 +4,15 @@ class API::StatsController < ApplicationController
 
   def show_weekly
     range = (Date.today-1.week..Date.today)
+    @trips = Trip.all_trips(range)
 
-    data = {
-        total_distance: Trip.total_distance(range),
-        total_price: Trip.total_price(range)
-      }
-
-    json_response(data)
+    render json: TripsWeeklyPresenter.new(@trips)
   end
 
   def show_monthly
     range = (Date.today.beginning_of_month..Date.today.end_of_month)
+    @trips = Trip.all_trips(range)
 
-    @dates = Trip.all_occured_trips(range)
-
-    data ||= []
-
-    @dates.each do |date|
-      data << {
-        day: Trip.convert_date(date),
-        total_distance: Trip.count_total_distance(date),
-        avg_ride: Trip.count_average_ride(date),
-        avg_price: Trip.count_average_price(date)
-      }
-    end
-    json_response(data)
+    render json: TripsMonthlyPresenter.new(@trips)
   end
 end
