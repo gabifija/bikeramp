@@ -11,8 +11,9 @@ class API::StatsController < ApplicationController
 
   def show_monthly
     range = (Date.today.beginning_of_month..Date.today.end_of_month)
-    @trips = Trip.all_trips(range)
-
+    @trips = Trip.select(:date, 'SUM(distance) AS sum_distance',
+      'AVG(distance) AS avg_ride','AVG(price) AS avg_price').where(:date => range).group(:date)
+      
     render json: TripsMonthlyPresenter.new(@trips)
   end
 end
